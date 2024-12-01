@@ -1,7 +1,7 @@
 ﻿@page "/cursos/details/{id:int}"
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Authorization
-@attribute [Authorize]
+@* @attribute [Authorize] *@
 @using PruebaCursos.Services
 @using PruebaCursos.Models;
 @inject CursoService CursoService
@@ -11,20 +11,66 @@
 
 @if (curso != null)
 {
-    <dl class="row">
-        <dt class="col-sm-3">Nombre</dt>
-        <dd class="col-sm-9">@curso.Nombre</dd>
-
-        <dt class="col-sm-3">Descripción</dt>
-        <dd class="col-sm-9">@curso.Descripcion</dd>
-
-        <dt class="col-sm-3">Fecha de Creación</dt>
-        <dd class="col-sm-9">@curso.FechaCreacion.ToShortDateString()</dd>
-    </dl>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-header bg-primary text-white">
+                        <h2 class="mb-0 d-flex justify-content-between align-items-center">
+                            Detalles del Curso
+                            <span class="badge bg-light text-primary">
+                                <i class="bi bi-book me-2"></i>@curso.Nombre
+                            </span>
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-md-end">
+                                <strong class="text-muted">Nombre:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @curso.Nombre
+                            </div>
+                        </div>
+                        <hr class="my-3">
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-md-end">
+                                <strong class="text-muted">Descripción:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                @curso.Descripcion
+                            </div>
+                        </div>
+                        <hr class="my-3">
+                        <div class="row mb-3">
+                            <div class="col-md-4 text-md-end">
+                                <strong class="text-muted">Fecha de Creación:</strong>
+                            </div>
+                            <div class="col-md-8">
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    @curso.FechaCreacion.ToString("dd MMMM yyyy")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-    <p>El curso no fue encontrado.</p>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="alert alert-danger text-center" role="alert">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    El curso no fue encontrado.
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 <a href="/cursos" class="btn btn-secondary">Volver</a>

@@ -5,42 +5,53 @@
 
 <h1>Cursos</h1>
 
-<p>
-    <a href="/cursos/create" class="btn btn-success">Crear Curso</a>
-</p>
+@* <p> *@
+@*     <a href="/cursos/create" class="btn btn-success">Crear Curso</a> *@
+@* </p> *@
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Fecha de Creación</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (cursos != null)
-        {
-            foreach (var curso in cursos)
+@if (cursos != null && cursos.Any())
+{
+    <div class="container-fluid">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var curso in cursos)
             {
-                <tr>
-                    <td>@curso.Nombre</td>
-                    <td>@curso.Descripcion</td>
-                    <td>@curso.FechaCreacion.ToShortDateString()</td>
-                    <td>
-                        <a href="/cursos/details/@curso.CursoId" class="btn btn-info btn-sm">Detalles</a>
-                    </td>
-                </tr>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">@curso.Nombre</h5>
+                            <p class="card-text text-muted mb-3">@curso.Descripcion</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    Creado: @curso.FechaCreacion.ToShortDateString()
+                                </small>
+                                <div class="d-flex">
+                                    <a href="/cursos/details/@curso.CursoId" class="btn btn-primary btn-sm me-2">
+                                        Ver Detalles
+                                    </a>
+                                    <a href="/evaluaciones/curso/@curso.CursoId" class="btn btn-primary btn-sm">
+                                        Ver Evaluaciones
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             }
-        }
-        else
-        {
-            <tr>
-                <td colspan="4" class="text-center">No hay cursos disponibles.</td>
-            </tr>
-        }
-    </tbody>
-</table>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-info text-center" role="alert">
+                    No hay cursos disponibles.
+                </div>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     private List<Curso> cursos;

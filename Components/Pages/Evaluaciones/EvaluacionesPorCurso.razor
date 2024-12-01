@@ -4,29 +4,73 @@
 @inject EvaluacionService EvaluacionService
 @inject NavigationManager NavigationManager
 
-<h3>Evaluaciones del Curso</h3>
+<div class="container-fluid">
+    <div class="row mb-3 align-items-center">
+        <div class="col">
+            <h3 class="mb-0">Evaluaciones del Curso</h3>
+        </div>
+        <div class="col-auto">
+            <a href="/cursos" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-2"></i>Volver
+            </a>
+        </div>
+    </div>
 
-@if (evaluaciones == null)
-{
-    <p>Cargando evaluaciones...</p>
-}
-else if (evaluaciones.Count == 0)
-{
-    <p>No hay evaluaciones para este curso.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var evaluacion in evaluaciones)
+    @if (evaluaciones == null)
+    {
+        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    }
+    else if (evaluaciones.Count == 0)
+    {
+        <div class="alert alert-info text-center" role="alert">
+            <i class="bi bi-info-circle me-2"></i>
+            No hay evaluaciones disponibles para este curso.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var evaluacion in evaluaciones)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">@evaluacion.Titulo</h5>
+                            <p class="card-text text-muted mb-3">@evaluacion.Descripcion</p>
+
+                            <div class="d-flex justify-content-between small text-muted mb-3">
+                                <div>
+                                    <i class="bi bi-calendar-check me-2"></i>
+                                    <strong>Inicio:</strong> @evaluacion.FechaInicio.ToShortDateString()
+                                </div>
+                                <div>
+                                    <i class="bi bi-calendar-x me-2"></i>
+                                    <strong>Fin:</strong> @evaluacion.FechaFin.ToShortDateString()
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@functions {
+    private string GetEstadoClase(string estado)
+    {
+        return estado.ToLower() switch
         {
-            <li class="list-group-item">
-                <h5>@evaluacion.Titulo</h5>
-                <p>@evaluacion.Descripcion</p>
-                <p><strong>Inicio:</strong> @evaluacion.FechaInicio.ToShortDateString()</p>
-                <p><strong>Fin:</strong> @evaluacion.FechaFin.ToShortDateString()</p>
-            </li>
-        }
-    </ul>
+            "activo" => "bg-success text-white",
+            "pendiente" => "bg-warning text-dark",
+            "finalizado" => "bg-secondary text-white",
+            _ => "bg-light text-dark"
+        };
+    }
 }
 
 @code {
