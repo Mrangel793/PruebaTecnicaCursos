@@ -1,0 +1,41 @@
+﻿@page "/evaluaciones/historial/{UsuarioId:int}"
+@using PruebaCursos.Services
+@using PruebaCursos.Models;
+@inject EvaluacionService EvaluacionService
+
+<h3>Historial de Evaluaciones</h3>
+
+@if (evaluaciones == null)
+{
+    <p>Cargando historial...</p>
+}
+else if (evaluaciones.Count == 0)
+{
+    <p>No hay evaluaciones en el historial.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var evaluacion in evaluaciones)
+        {
+            <li class="list-group-item">
+                <h5>@evaluacion.Titulo</h5>
+                <p>@evaluacion.Descripcion</p>
+                <p><strong>Curso:</strong> @evaluacion.Curso.Nombre</p>
+                <p><strong>Inicio:</strong> @evaluacion.FechaInicio.ToShortDateString()</p>
+                <p><strong>Fin:</strong> @evaluacion.FechaFin.ToShortDateString()</p>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public int UsuarioId { get; set; }
+
+    private List<Evaluacione>? evaluaciones;
+
+    protected override async Task OnInitializedAsync()
+    {
+        evaluaciones = await EvaluacionService.GetHistorialEvaluacionesPorUsuarioAsync(UsuarioId);
+    }
+}

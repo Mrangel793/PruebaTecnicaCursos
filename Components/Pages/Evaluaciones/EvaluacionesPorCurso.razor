@@ -1,0 +1,41 @@
+﻿@page "/evaluaciones/curso/{CursoId:int}"
+@using PruebaCursos.Services
+@using PruebaCursos.Models;
+@inject EvaluacionService EvaluacionService
+@inject NavigationManager NavigationManager
+
+<h3>Evaluaciones del Curso</h3>
+
+@if (evaluaciones == null)
+{
+    <p>Cargando evaluaciones...</p>
+}
+else if (evaluaciones.Count == 0)
+{
+    <p>No hay evaluaciones para este curso.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var evaluacion in evaluaciones)
+        {
+            <li class="list-group-item">
+                <h5>@evaluacion.Titulo</h5>
+                <p>@evaluacion.Descripcion</p>
+                <p><strong>Inicio:</strong> @evaluacion.FechaInicio.ToShortDateString()</p>
+                <p><strong>Fin:</strong> @evaluacion.FechaFin.ToShortDateString()</p>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    [Parameter] public int CursoId { get; set; }
+
+    private List<Evaluacione>? evaluaciones;
+
+    protected override async Task OnInitializedAsync()
+    {
+        evaluaciones = await EvaluacionService.GetEvaluacionesPorCursoAsync(CursoId);
+    }
+}

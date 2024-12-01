@@ -1,0 +1,57 @@
+﻿@page "/evaluaciones/crear"
+@using PruebaCursos.Services
+@using PruebaCursos.Models;
+@inject EvaluacionService EvaluacionService
+@inject NavigationManager NavigationManager
+
+<h3>Crear Evaluación</h3>
+
+<EditForm Model="@nuevaEvaluacion" OnValidSubmit="CrearEvaluacion">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="titulo">Título</label>
+        <InputText id="titulo" class="form-control" @bind-Value="nuevaEvaluacion.Titulo" />
+    </div>
+
+    <div class="mb-3">
+        <label for="descripcion">Descripción</label>
+        <InputTextArea id="descripcion" class="form-control" @bind-Value="nuevaEvaluacion.Descripcion" />
+    </div>
+
+    <div class="mb-3">
+        <label for="fechaInicio">Fecha de Inicio</label>
+        <InputDate id="fechaInicio" class="form-control" @bind-Value="nuevaEvaluacion.FechaInicio" />
+    </div>
+
+    <div class="mb-3">
+        <label for="fechaFin">Fecha de Fin</label>
+        <InputDate id="fechaFin" class="form-control" @bind-Value="nuevaEvaluacion.FechaFin" />
+    </div>
+
+    <div class="mb-3">
+        <label for="cursoId">ID del Curso</label>
+        <InputNumber id="cursoId" class="form-control" @bind-Value="nuevaEvaluacion.CursoId" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Crear Evaluación</button>
+</EditForm>
+
+@code {
+    private Evaluacione nuevaEvaluacion = new Evaluacione();
+
+    private async Task CrearEvaluacion()
+    {
+        var resultado = await EvaluacionService.CrearEvaluacionAsync(nuevaEvaluacion);
+
+        if (resultado)
+        {
+            NavigationManager.NavigateTo("/evaluaciones/curso/" + nuevaEvaluacion.CursoId);
+        }
+        else
+        {
+            Console.WriteLine("Error al crear la evaluación.");
+        }
+    }
+}

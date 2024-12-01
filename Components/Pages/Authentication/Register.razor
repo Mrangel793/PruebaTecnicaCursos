@@ -1,0 +1,104 @@
+﻿@page "/register"
+@using PruebaCursos.Services
+@using PruebaCursos.Models
+@inject UsuarioService UsuarioService
+@inject NavigationManager NavigationManager
+
+<h3>Registro de Usuario</h3>
+<EditForm Model="usuario" OnValidSubmit="RegistrarUsuario" FormName="RegisterForm">
+    <DataAnnotationsValidator />
+    <ValidationSummary class="text-danger" />
+
+    <div class="mb-3">
+        <label for="nombre">Nombre</label>
+        <InputText id="nombre" class="form-control" @bind-Value="usuario.Nombre" />
+        <ValidationMessage For="@(() => usuario.Nombre)" />
+    </div>
+    <div class="mb-3">
+        <label for="email">Email</label>
+        <InputText id="email" type="email" class="form-control" @bind-Value="usuario.Email" />
+        <ValidationMessage For="@(() => usuario.Email)" />
+    </div>
+    <div class="mb-3">
+        <label for="contraseña">Contraseña</label>
+        <InputText id="contraseña" type="password" class="form-control" @bind-Value="usuario.Contraseña" />
+        <ValidationMessage For="@(() => usuario.Contraseña)" />
+    </div>
+    <button type="submit" class="btn btn-primary">Registrar</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(mensaje))
+{
+    <div class="alert @(mensajeEsError ? "alert-danger" : "alert-success") mt-3">@mensaje</div>
+}
+
+@code {
+    private Usuario usuario = new Usuario();
+    private string? mensaje;
+    private bool mensajeEsError = false;
+
+    protected override void OnInitialized()
+    {
+        // Ensure a fresh Usuario object each time the page loads
+        usuario = new Usuario();
+    }
+
+    private async Task RegistrarUsuario()
+    {
+        // Extensive debugging logs
+        Console.WriteLine($"Debugging Registration:");
+        Console.WriteLine($"Nombre: '{usuario.Nombre}'");
+        Console.WriteLine($"Email: '{usuario.Email}'");
+        Console.WriteLine($"Contraseña: '{usuario.Contraseña}'");
+
+        // Manually check each field
+        bool isValid = true;
+        if (string.IsNullOrWhiteSpace(usuario.Nombre))
+        {
+            Console.WriteLine("Nombre is null or whitespace");
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(usuario.Email))
+        {
+            Console.WriteLine("Email is null or whitespace");
+            isValid = false;
+        }
+        if (string.IsNullOrWhiteSpace(usuario.Contraseña))
+        {
+            Console.WriteLine("Contraseña is null or whitespace");
+            isValid = false;
+        }
+
+        // If any field is invalid, show error and return
+        if (!isValid)
+        {
+            mensaje = "Todos los campos son obligatorios.";
+            mensajeEsError = true;
+            return;
+        }
+
+        try
+        {
+            var resultado = await UsuarioService.RegistrarUsuarioAsync(usuario);
+            if (resultado)
+            {
+                mensaje = "Usuario registrado con éxito.";
+                mensajeEsError = false;
+                NavigationManager.NavigateTo("/login", forceLoad: true);
+            }
+            else
+            {
+                mensaje = "No se pudo registrar el usuario. Verifique sus datos.";
+                mensajeEsError = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            mensaje = $"Ocurrió un error: {ex.Message}";
+            mensajeEsError = true;
+
+            // Log full exception details
+            Console.WriteLine($"Excepción completa: {ex}");
+        }
+    }
+}

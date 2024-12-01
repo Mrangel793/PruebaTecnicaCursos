@@ -1,0 +1,52 @@
+﻿@page "/cursos"
+@using PruebaCursos.Services
+@using PruebaCursos.Models;
+@inject CursoService CursoService
+
+<h1>Cursos</h1>
+
+<p>
+    <a href="/cursos/create" class="btn btn-success">Crear Curso</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Fecha de Creación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (cursos != null)
+        {
+            foreach (var curso in cursos)
+            {
+                <tr>
+                    <td>@curso.Nombre</td>
+                    <td>@curso.Descripcion</td>
+                    <td>@curso.FechaCreacion.ToShortDateString()</td>
+                    <td>
+                        <a href="/cursos/details/@curso.CursoId" class="btn btn-info btn-sm">Detalles</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="4" class="text-center">No hay cursos disponibles.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Curso> cursos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        cursos = await CursoService.GetAllCursosAsync();
+    }
+}

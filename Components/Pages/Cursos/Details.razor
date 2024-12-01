@@ -1,0 +1,40 @@
+﻿@page "/cursos/details/{id:int}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@using PruebaCursos.Services
+@using PruebaCursos.Models;
+@inject CursoService CursoService
+@inject NavigationManager NavigationManager
+
+<h1>Detalles del Curso</h1>
+
+@if (curso != null)
+{
+    <dl class="row">
+        <dt class="col-sm-3">Nombre</dt>
+        <dd class="col-sm-9">@curso.Nombre</dd>
+
+        <dt class="col-sm-3">Descripción</dt>
+        <dd class="col-sm-9">@curso.Descripcion</dd>
+
+        <dt class="col-sm-3">Fecha de Creación</dt>
+        <dd class="col-sm-9">@curso.FechaCreacion.ToShortDateString()</dd>
+    </dl>
+}
+else
+{
+    <p>El curso no fue encontrado.</p>
+}
+
+<a href="/cursos" class="btn btn-secondary">Volver</a>
+
+@code {
+    [Parameter] public int id { get; set; }
+    private Curso curso;
+
+    protected override async Task OnInitializedAsync()
+    {
+        curso = await CursoService.GetCursoByIdAsync(id);
+    }
+}
